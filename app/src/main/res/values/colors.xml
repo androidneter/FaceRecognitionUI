@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#D4EFFF</color>
+    <color name="colorPrimaryDark">#056CB7</color>
+    <!--提示语背景颜色-->
+    <color name="colorAccent">#80000000</color>
+    <!--布局上的文字-->
+    <color name="textColor">#494949</color>
+    <!--外面圈背景颜色-->
+    <color name="circleBg">#DFE7EB</color>
+    <!--外面圈背景颜色-->
+    <color name="viewBgWhite">#FFFFFFFF</color>
+</resources>

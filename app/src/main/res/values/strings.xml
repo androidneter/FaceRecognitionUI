@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">FaceRecognitionUI</string>
+    <string name="face_tip">拿起手机，眨眨眼</string>
+</resources>
