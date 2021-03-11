@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cl_root"
@@ -14,30 +13,30 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:tip_text="请闭眼"
-        app:tip_text_size="20sp"/>
+        app:tip_text_size="20sp" />
 
-    <!--关闭按钮-->
-    <android.support.v7.widget.AppCompatImageView
-        android:id="@+id/iv_close"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:padding="5dp"
-        android:src="@drawable/iv_svg_close"/>
 
     <!--提示信息-->
     <TextView
         android:id="@+id/tv_tip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/iv_close"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="30dp"
         android:text="@string/face_tip"
         android:textColor="@color/textColor"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintLeft_toRightOf="parent"
         app:layout_constraintRight_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_close"/>
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/changge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:text="切换状态"
+        app:layout_constraintBottom_toBottomOf="parent" />
 </android.support.constraint.ConstraintLayout>

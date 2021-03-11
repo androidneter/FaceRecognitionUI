@@ -37,6 +37,11 @@ public class FaceView extends SurfaceView implements SurfaceHolder.Callback, Run
      * 是否可以开始绘制了
      */
     private boolean mStart = false;
+
+    /**
+     * 是否结束
+     */
+    private volatile boolean mFinsh = false;
     /**
      * 默认中间圆的半径从0开始
      */
@@ -54,9 +59,9 @@ public class FaceView extends SurfaceView implements SurfaceHolder.Callback, Run
      */
     private int margin;
     /**
-     * 圆圈画笔
+     * 提示文本画笔
      */
-    private Paint mPaint;
+    private Paint mTextBgPaint;
     /**
      * 提示文本
      */
@@ -134,6 +139,11 @@ public class FaceView extends SurfaceView implements SurfaceHolder.Callback, Run
      */
     float currentAngle = 0;
 
+    /**
+     * 声明
+     */
+    Canvas canvas = null;
+
     public FaceView(Context context) {
         this(context, null);
     }
@@ -177,12 +187,6 @@ public class FaceView extends SurfaceView implements SurfaceHolder.Callback, Run
         margin = ScreenUtils.dp2px(context, 60);
         mBgArcWidth = ScreenUtils.dp2px(context, 5);
 
-        //初始化画笔
-        mPaint = new Paint();
-        mPaint.setAntiAlias(true);
-        mPaint.setColor(getResources().getColor(R.color.colorAccent));
-        mPaint.setStyle(Paint.Style.FILL);
-
         //绘制文字画笔
         mTextPaint = new Paint();
         mTextPaint.setStyle(Paint.Style.FILL);
@@ -190,6 +194,12 @@ public class FaceView extends SurfaceView implements SurfaceHolder.Callback, Run
         mTextPaint.setColor(mTipTextColor);
         mTextPaint.setTextSize(mTipTextSize);
         mTextPaint.setTextAlign(Paint.Align.CENTER);
+
+        //初始化文字背景画笔
+        mTextBgPaint = new Paint();
+        mTextBgPaint.setAntiAlias(true);
+        mTextBgPaint.setColor(getResources().getColor(R.color.colorAccent));
+        mTextBgPaint.setStyle(Paint.Style.FILL);
 
         // 圆弧背景
         mBgArcPaint = new Paint();
@@ -266,22 +276,24 @@ public class FaceView extends SurfaceView implements SurfaceHolder.Callback, Run
     @Override
     public void run() {
         //循环绘制画面内容
-        while (true) {
+        while (!mFinsh) {
             if (mStart) {
                 drawView();
             }
         }
     }
 
+
     private void drawView() {
-        Canvas canvas = null;
         try {
             //获得canvas对象
             canvas = mSurfaceHolder.lockCanvas();
-            //清除画布上面里面的内容
-            canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-            //绘制画布内容
-            drawContent(canvas);
+            if (canvas != null) {
+                //清除画布上面里面的内容
+                canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+                //绘制画布内容
+                drawContent(canvas);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -295,7 +307,7 @@ public class FaceView extends SurfaceView implements SurfaceHolder.Callback, Run
     /**
      * 跟新提示信息
      *
-     * @param title
+     * @param title title
      */
     public void updateTipsInfo(String title) {
         mTipText = title;
@@ -325,14 +337,13 @@ public class FaceView extends SurfaceView implements SurfaceHolder.Callback, Run
         Path path = new Path();
         //以（400,200）为圆心，半径为100绘制圆 指创建顺时针方向的矩形路径
         path.addCircle(mCenterPoint.x, mCenterPoint.y, currentRadius, Path.Direction.CW);
-        // 是A形状中不同于B的部分显示出来
+        //是A形状中不同于B的部分显示出来
         canvas.clipPath(path, Region.Op.DIFFERENCE);
         // 半透明背景效果
         canvas.clipRect(0, 0, mViewWidth, mViewHeight);
         //绘制背景颜色
         canvas.drawColor(getResources().getColor(R.color.viewBgWhite));
     }
-
 
     /**
      * 绘制人脸识别界面进度条
@@ -408,6 +419,18 @@ public class FaceView extends SurfaceView implements SurfaceHolder.Callback, Run
     }
 
     /**
+     * 销毁视图，释放资源
+     */
+    public void destroyView() {
+        //停止运行
+        mFinsh = true;
+        mStart = false;
+        isRunning = false;
+        isBack = false;
+    }
+
+
+    /**
      * 绘制人脸识别提示
      *
      * @param canvas canvas
@@ -424,7 +447,7 @@ public class FaceView extends SurfaceView implements SurfaceHolder.Callback, Run
         //提示框背景高度
         int height = cameraWidth / 4;
         Rect rect = new Rect(x, y, x + width, y + height);
-        canvas.drawRect(rect, mPaint);
+        canvas.drawRect(rect, mTextBgPaint);
 
         //计算baseline
         Paint.FontMetrics fontMetrics = mTextPaint.getFontMetrics();
@@ -445,8 +468,8 @@ public class FaceView extends SurfaceView implements SurfaceHolder.Callback, Run
         int y = mCenterPoint.x + (width / 2);
         int height = width;
         Rect rect = new Rect(x, y, x + width, y + height);
-        mPaint.setColor(Color.GREEN);
-        mPaint.setStyle(Paint.Style.STROKE);
-        canvas.drawRect(rect, mPaint);
+        mTextBgPaint.setColor(Color.GREEN);
+        mTextBgPaint.setStyle(Paint.Style.STROKE);
+        canvas.drawRect(rect, mTextBgPaint);
     }
 }

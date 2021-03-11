@@ -14,7 +14,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.demo.facerecognition.view.FaceView;
@@ -31,11 +31,11 @@ public class PreviewActivity extends AppCompatActivity {
     private final String TAG = "PreviewActivity";
     private Camera camera;
     private boolean isPreview = false;
-
-    static final String[] PERMISSION = new String[]{
+    final String[] PERMISSION = new String[]{
             //获取照相机权限
             Manifest.permission.CAMERA,
     };
+    private FaceView faceView;
 
     /**
      * 设置Android6.0的权限申请
@@ -55,12 +55,12 @@ public class PreviewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_preview);
         //初始化布局
         ConstraintLayout constraintLayout = findViewById(R.id.cl_root);
-        final FaceView faceView = findViewById(R.id.fv_title);
-        ImageView imageView = findViewById(R.id.iv_close);
+        faceView = findViewById(R.id.fv_title);
+        Button changeBtn = findViewById(R.id.changge);
         //申请手机的权限
         setPermissions();
 
-        imageView.setOnClickListener(new View.OnClickListener() {
+        changeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int i = (int) (1 + Math.random() * 4);
@@ -147,11 +147,13 @@ public class PreviewActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        //释放资源
+        faceView.destroyView();
         if (camera != null) {
             if (isPreview) {//正在预览
                 try {
-                    camera.stopPreview();
                     camera.release();
+                    camera = null;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
